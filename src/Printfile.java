@@ -9,4 +9,13 @@ public class Printfile {
             System.out.println(String.format("%s ", item.getFreaquecy()));
         }
     }
+
+    public static void printFile(Toy toy){
+            System.out.print(String.format("%s. ", toy.getId()));
+            System.out.print(String.format("%s, ", toy.getName()));
+            System.out.print(String.format("%s, ", toy.getQuantity()));
+            System.out.println(String.format("%s ", toy.getFreaquecy()));
+        }
+
+
 }
