@@ -1,7 +1,4 @@
-import java.io.BufferedWriter;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.List;
 import java.util.Scanner;
 
@@ -19,6 +16,8 @@ public class Userinterface {
         int lineNumber;
         Double newFreaquency;
         Scanner scan = new Scanner(System.in);
+        ReadCSV rcvs = new ReadCSV();
+        List<Toy> toys = rcvs.readFile();
         while (true){
             System.out.println("Выбирите действие");
             System.out.println(MENU);
@@ -54,14 +53,13 @@ public class Userinterface {
                         System.out.println("Вы ввели не число. Поробуйте снова.");
                     }
                 }
-                ReadCSV rcvs = new ReadCSV();
-                int len = rcvs.readFile().size() + 1;
+                int len = toys.size() + 1;
                 Toy toy = new Toy(len, name, quantity, freaquency);
-                SaveCSV csv = new SaveCSV();
-                csv.writeResult(toy, true);
+                Game game = new Game();
+                game.addToy(toys, toy);
+
             } else if (user_choose.equals("2")) {
-                ReadCSV rcvs = new ReadCSV();
-                Printfile.printFile(rcvs.readFile());
+                Printfile.printFile(toys);
             } else if (user_choose.equals("3")) {
                 while (true){
                     System.out.println("Введите номер записи, которую хотите изменить: ");
@@ -83,39 +81,23 @@ public class Userinterface {
                         System.out.println("Вы ввели не число. Поробуйте снова.");
                     }
                 }
-
-
-                ReadCSV rcvs = new ReadCSV();
-                List<Toy> changeFreaq = rcvs.readFile();
-                changeFreaq.get(lineNumber - 1).setFreaquecy(newFreaquency);
-                SaveCSV csv = new SaveCSV();
-                csv.writeResult(changeFreaq.get(0), false);
-                changeFreaq.remove(0);
-                for (Toy item: changeFreaq) {
-                    csv.writeResult(item, true);
-                }
+                toys.get(lineNumber - 1).setFreaquecy(newFreaquency);
             } else if (user_choose.equals("4")) {
                 System.out.println("4");
-                ReadCSV rcvs = new ReadCSV();
-                List<Toy> changeFreaq = rcvs.readFile();
                 Game game = new Game();
-                Toy toy = game.elementWeight(changeFreaq);
-                Printfile.printFile(toy);
-                changeFreaq.remove(toy);
-                SaveCSV csv = new SaveCSV();
-                csv.writeResult(changeFreaq.get(0), false);
-                changeFreaq.remove(0);
-                for (Toy item: changeFreaq) {
-                    csv.writeResult(item, true);
-                }
-
+                game.elementWeight(toys);
             } else if (user_choose.equals("5")) {
                 System.out.println("Программа завершила свою работу.");
+                SaveCSV csv = new SaveCSV();
+                csv.writeResult(toys.get(0), false);
+                toys.remove(0);
+                for (Toy item: toys) {
+                    csv.writeResult(item, true);
+                }
                 break;
             }else {
                 System.out.println("Некорректный ввод. Попробуйте еще раз");
             }
         }
-
     }
 }
