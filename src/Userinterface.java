@@ -18,11 +18,11 @@ public class Userinterface {
         Scanner scan = new Scanner(System.in);
         ReadCSV rcvs = new ReadCSV();
         List<Toy> toys = rcvs.readFile();
-        while (true){
-            System.out.println("Выбирите действие");
+        while (true) {
+            System.out.println("Выбирите действие: ");
             System.out.println(MENU);
             String user_choose = scan.nextLine();
-            if (user_choose.equals("1")){
+            if (user_choose.equals("1")) {
                 System.out.println("Введите данные новой игрушки");
                 while (true) {
                     System.out.println("Введете название игрушки: ");
@@ -33,7 +33,7 @@ public class Userinterface {
                         System.out.println("Вы ввели пустую строку. Попробуйте сновва.");
                     }
                 }
-                while(true) {
+                while (true) {
                     System.out.println("Введите количество игрушек: ");
                     String quant = scan.nextLine();
                     if (Checker.isNumeric(quant)) {
@@ -43,13 +43,13 @@ public class Userinterface {
                         System.out.println("Вы ввели не число. Поробуйте снова.");
                     }
                 }
-                while (true){
+                while (true) {
                     System.out.println("Введите частоту выпадения игрушки(от 0 до 100 %): ");
                     String freaquecyTemp = scan.nextLine();
-                    if (Checker.isReal(freaquecyTemp) && Checker.isCorrectValue(freaquecyTemp)){
+                    if (Checker.isReal(freaquecyTemp) && Checker.isCorrectValue(freaquecyTemp)) {
                         freaquency = Double.parseDouble(freaquecyTemp);
                         break;
-                    }else {
+                    } else {
                         System.out.println("Вы ввели не число. Поробуйте снова.");
                     }
                 }
@@ -59,43 +59,56 @@ public class Userinterface {
                 game.addToy(toys, toy);
 
             } else if (user_choose.equals("2")) {
-                Printfile.printFile(toys);
+                if (toys.size() != 0) {
+                    Printfile.printFile(toys);
+                } else {
+                    System.out.println("Нет доступных игрушек. Необходимо создать игрушку.");
+                }
+
             } else if (user_choose.equals("3")) {
-                while (true){
-                    System.out.println("Введите номер записи, которую хотите изменить: ");
-                    String lineNumb = scan.nextLine();
-                    if (Checker.isNumeric(lineNumb)) {
-                        lineNumber = Integer.parseInt(lineNumb);
-                        break;
-                    } else {
-                        System.out.println("Вы ввели не число. Поробуйте снова.");
+                if (toys.size() != 0) {
+                    while (true) {
+                        System.out.println("Введите номер записи, которую хотите изменить: ");
+                        String lineNumb = scan.nextLine();
+                        if (Checker.isNumeric(lineNumb) && Integer.parseInt(lineNumb) <= toys.size()) {
+                            lineNumber = Integer.parseInt(lineNumb);
+                            break;
+                        } else {
+                            System.out.println("Не корректный ввод. Поробуйте снова.");
+                        }
                     }
-                }
-                while (true){
-                    System.out.println("Введите новое значение частоты выпадания игрушки в процентах от 0 до 100: ");
-                    String freaquecyTemp1 = scan.nextLine();
-                    if (Checker.isReal(freaquecyTemp1) && Checker.isCorrectValue(freaquecyTemp1)){
-                        newFreaquency = Double.parseDouble(freaquecyTemp1);
-                        break;
-                    }else {
-                        System.out.println("Вы ввели не число. Поробуйте снова.");
+                    while (true) {
+                        System.out.println("Введите новое значение частоты выпадания игрушки в процентах от 0 до 100: ");
+                        String freaquecyTemp1 = scan.nextLine();
+                        if (Checker.isReal(freaquecyTemp1) && Checker.isCorrectValue(freaquecyTemp1)) {
+                            newFreaquency = Double.parseDouble(freaquecyTemp1);
+                            break;
+                        } else {
+                            System.out.println("Вы ввели не число. Поробуйте снова.");
+                        }
                     }
+                    toys.get(lineNumber - 1).setFreaquecy(newFreaquency);
+                } else {
+                    System.out.println("Нет игрушек для изменения. Создайте игрушку.");
                 }
-                toys.get(lineNumber - 1).setFreaquecy(newFreaquency);
             } else if (user_choose.equals("4")) {
                 System.out.println("4");
                 Game game = new Game();
                 game.elementWeight(toys);
             } else if (user_choose.equals("5")) {
                 System.out.println("Программа завершила свою работу.");
-                SaveCSV csv = new SaveCSV();
-                csv.writeResult(toys.get(0), false);
-                toys.remove(0);
-                for (Toy item: toys) {
-                    csv.writeResult(item, true);
+                if (toys.size() != 0) {
+                    SaveCSV csv = new SaveCSV();
+                    csv.writeResult(toys.get(0), false);
+                    toys.remove(0);
+                    for (Toy item : toys) {
+                        csv.writeResult(item, true);
+                    }
+                    break;
+                } else {
+                    break;
                 }
-                break;
-            }else {
+            } else {
                 System.out.println("Некорректный ввод. Попробуйте еще раз");
             }
         }
